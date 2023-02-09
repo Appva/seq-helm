@@ -25,9 +25,16 @@ acceptEULA: "Y"
 # firstRunAdminPasswordHash: ""
 # firstRunRequireAuthenticationForHttpIngestion: true
 
+securityContext:
+  runAsUser: 0
+  capabilities:
+    add:
+      - NET_BIND_SERVICE
+
 # The complete Seq API and UI.
 # This API can accept events and serve API requests.
 ui:
+  containerPort: 80
   service:
     port: 80
   ingress:
@@ -38,6 +45,7 @@ ui:
 # The ingestion-only API.
 # This API is a subset of ui that can only ingest events.
 ingestion:
+  containerPort: 5341
   service:
     port: 5341
   ingress:
@@ -51,6 +59,11 @@ gelf:
   image:
     repository: datalust/seq-input-gelf
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 0
+    capabilities:
+      add:
+        - NET_BIND_SERVICE
   service:
     port: 12201
     # GELF can be ingested through either TCP or UDP
@@ -62,6 +75,11 @@ syslog:
   image:
     repository: datalust/seq-input-syslog
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 0
+    capabilities:
+      add:
+        - NET_BIND_SERVICE
   service:
     port: 514
     # Only UDP is currently supported for ingesting Syslog
